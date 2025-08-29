@@ -61,8 +61,12 @@ export function generateWhatsAppMessage(teams, gameDetails = {}) {
   if (!teams) return '';
 
   // Prefer { teamA, teamB }, fallback to { team1, team2 }
-  const teamAPlayers = getTeamPlayers(teams, ['teamA', 'team1']);
-  const teamBPlayers = getTeamPlayers(teams, ['teamB', 'team2']);
+  const teamA = teams.teamA || teams.team1;
+  const teamB = teams.teamB || teams.team2;
+  const teamAPlayers = teamA?.players || [];
+  const teamBPlayers = teamB?.players || [];
+  const teamACaptain = teamA?.captain;
+  const teamBCaptain = teamB?.captain;
 
   // Per-team waiting lists; fallback to generic if you keep a shared list
   const waitingA = getWaiting(teams, ['waitingA']) || [];
@@ -78,7 +82,11 @@ export function generateWhatsAppMessage(teams, gameDetails = {}) {
   msg += `*${gameDetails.price || '220₹pp'}*\n\n`;
 
   // TEAM A
-  msg += `*Team A: Black/Dark*\n\n`;
+  msg += `*Team A: Black/Dark*\n`;
+  if (teamACaptain) {
+    msg += `Captain: ${teamACaptain.name}\n`;
+  }
+  msg += `\n`;
   teamAPlayers.forEach((p, i) => {
     msg += `${num(i + 1)} ${lineFor(p)}\n`;
   });
@@ -97,7 +105,11 @@ export function generateWhatsAppMessage(teams, gameDetails = {}) {
   msg += `\n`;
 
   // TEAM B
-  msg += `*Team B: White/Light*\n\n`;
+  msg += `*Team B: White/Light*\n`;
+  if (teamBCaptain) {
+    msg += `Captain: ${teamBCaptain.name}\n`;
+  }
+  msg += `\n`;
   teamBPlayers.forEach((p, i) => {
     msg += `${num(i + 1)} ${lineFor(p)}\n`;
   });

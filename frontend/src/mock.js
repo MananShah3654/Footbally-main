@@ -183,7 +183,7 @@ export const mockPlayers = [
   {
     id: 11,
     name: "Harsh Patel",
-    position: "ATT",
+    position: "MID",
     points: 86,
     photo: "https://res.cloudinary.com/dmj5fnl6q/image/upload/v1756474766/harsh_qkzilk.jpg",
     skills: {
@@ -237,7 +237,7 @@ export const mockPlayers = [
   {
     id: 14,
     name: "Sandeep Patel",
-    position: "ATT",
+    position: "MID",
     points: 89,
     photo: "https://res.cloudinary.com/dmj5fnl6q/image/upload/v1756474767/sandipbhai_teobkd.jpg",
     skills: {
@@ -420,16 +420,22 @@ export const shuffleTeams = (players) => {
     }
   }
 
+  // Pick random captain for each team
+  const team1Captain = team1[Math.floor(Math.random() * team1.length)];
+  const team2Captain = team2[Math.floor(Math.random() * team2.length)];
+
   return {
     team1: {
       players: team1,
       totalPoints: team1Points,
-      formation: getFormation(team1)
+      formation: getFormation(team1),
+      captain: team1Captain
     },
     team2: {
       players: team2,
       totalPoints: team2Points,
-      formation: getFormation(team2)
+      formation: getFormation(team2),
+      captain: team2Captain
     }
   };
 };
