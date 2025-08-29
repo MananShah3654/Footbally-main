@@ -10,6 +10,7 @@ import PlayerProfileModal from './components/PlayerProfileModal';
 import PlayerFormModal from './components/PlayerFormModal';
 import WhatsAppExport from './components/WhatsAppExport';
 import { Card } from './components/ui/card';
+import { generateWhatsAppMessage } from './lib/utils';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { 
@@ -28,38 +29,8 @@ import {
 import './App.css';
 
 const Home = () => {
-  // Copy WhatsApp message directly from main screen (Teams view)
-  const handleCopyWhatsApp = async () => {
-    if (!teams) return;
-    const team1Players = teams.team1.players;
-    const team2Players = teams.team2.players;
-    let message = `⚠ SUNDAY MORNING ⚠\n`;
-    message += `${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}\n`;
-    message += `👉 Time:- 7:00 - 8:30 AM\n`;
-    message += `👉 Venue:- Savvy Swaraj\n`;
-    message += `220₹pp\n\n`;
-    message += `Team 1: Black/Dark\n`;
-    team1Players.forEach((player, index) => {
-      const checkMark = player.isSubscribed ? '✅️' : '';
-      message += ` ${index + 1}.⁠ ⁠${player.name}${checkMark}\n`;
-    });
-    message += `\nSub:\n1. TBD\n`;
-    message += `\nTeam 2: White/Light\n`;
-    team2Players.forEach((player, index) => {
-      const checkMark = player.isSubscribed ? '✅️' : '';
-      message += `${index + 9}. ${player.name}${checkMark}\n`;
-    });
-    message += `\nSub:\n1. TBD\n\n`;
-    message += `🔥Game On🔥`;
-    try {
-      await navigator.clipboard.writeText(message);
-      toast.success('Team list copied to clipboard!', {
-        description: 'You can now paste it in WhatsApp'
-      });
-    } catch (error) {
-      toast.error('Failed to copy to clipboard');
-    }
-  };
+  // Use WhatsAppExport's logic for copying WhatsApp message
+  // Remove local handleCopyWhatsApp, use WhatsAppExport dialog only
   const [players, setPlayers] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]); // IDs of selected players
   const [teams, setTeams] = useState(null);
@@ -72,6 +43,8 @@ const Home = () => {
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [showPlayerForm, setShowPlayerForm] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState(null);
+  // WhatsApp Export dialog state
+  const [showWhatsAppExport, setShowWhatsAppExport] = useState(false);
 
   // Load players on mount
 
@@ -83,24 +56,24 @@ const Home = () => {
       setPlayers(mockPlayers);
       setLoading(false);
     } else {
-      loadPlayers();
+      // loadPlayers();
     }
   }, []);
 
   // Uncomment to use API
   /*
-  const loadPlayers = async () => {
-    try {
-      setLoading(true);
-      const playersData = await playersAPI.getAll();
-      setPlayers(playersData);
-    } catch (error) {
-      console.error('Error loading players:', error);
-      toast.error('Failed to load players');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const loadPlayers = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const playersData = await playersAPI.getAll();
+  //     setPlayers(playersData);
+  //   } catch (error) {
+  //     console.error('Error loading players:', error);
+  //     toast.error('Failed to load players');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   */
 
   const handleShuffle = async () => {
@@ -373,12 +346,18 @@ const Home = () => {
                     Shuffle Again
                   </Button>
                   <Button 
-                    onClick={handleCopyWhatsApp}
+                    onClick={() => setShowWhatsAppExport(true)}
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
                   >
                     <Copy className="w-4 h-4" />
                     Copy for WhatsApp
                   </Button>
+      {/* WhatsApp Export Dialog */}
+      <WhatsAppExport
+        teams={teams}
+        isOpen={showWhatsAppExport}
+        onClose={() => setShowWhatsAppExport(false)}
+      />
                 </div>
               </div>
             </Card>
@@ -489,7 +468,7 @@ const Home = () => {
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>

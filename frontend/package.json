@@ -1,4 +1,5 @@
 {
+    "homepage": "https://MananShah3654.github.io/Footbally-main",
     "name":  "frontend",
     "version":  "0.1.0",
     "private":  true,
@@ -58,7 +59,9 @@
     "scripts":  {
                     "start":  "craco start",
                     "build":  "craco build",
-                    "test":  "craco test"
+                    "test":  "craco test",
+                    "predeploy": "craco build",
+                    "deploy": "gh-pages -d build"
                 },
     "browserslist":  {
                          "production":  [
@@ -73,6 +76,7 @@
                                          ]
                      },
     "devDependencies":  {
+        "gh-pages": "^6.0.0",
                             "@craco/craco":  "^7.1.0",
                             "@eslint/js":  "9.23.0",
                             "autoprefixer":  "^10.4.20",
