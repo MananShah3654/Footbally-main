@@ -359,6 +359,60 @@ export const mockPlayers = [
     age: 26,
     preferredFoot: "Right",
     nationality: "India"
+  },
+  {
+    id: 21,
+    name: "Sagar",
+    position: "MID",
+    points: 87,
+    photo: "https://res.cloudinary.com/dmj5fnl6q/image/upload/v1756474767/sagar_yrtt9e.jpg",
+    skills: {
+      pace: 88,
+      shooting: 85,
+      passing: 77,
+      defending: 32,
+      dribbling: 89,
+      physical: 74
+    },
+    age: 26,
+    preferredFoot: "Right",
+    nationality: "India"
+  },
+  {
+    id: 22,
+    name: "Saumil Bhatt",
+    position: "DEF",
+    points: 87,
+    photo: "https://res.cloudinary.com/dmj5fnl6q/image/upload/v1756556261/saumil_eby4n7.jpg",
+    skills: {
+      pace: 88,
+      shooting: 85,
+      passing: 77,
+      defending: 32,
+      dribbling: 89,
+      physical: 74
+    },
+    age: 26,
+    preferredFoot: "Right",
+    nationality: "India"
+  },
+  {
+    id: 23,
+    name: "Aayush",
+    position: "MID",
+    points: 80,
+    photo: "https://res.cloudinary.com/dmj5fnl6q/image/upload/v1756469719/samples/smile.jpg",
+    skills: {
+      pace: 80,
+      shooting: 80,
+      passing: 80,
+      defending: 80,
+      dribbling: 80,
+      physical: 80
+    },
+    age: 25,
+    preferredFoot: "Left",
+    nationality: "India"
   }
 ];
 
