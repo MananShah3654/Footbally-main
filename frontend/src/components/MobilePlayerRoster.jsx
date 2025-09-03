@@ -200,20 +200,36 @@ const MobilePlayerRoster = ({ onPlayerClick, onEditPlayer, onDeletePlayer }) => 
         </div>
       )}
 
-      {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6">
+      {/* Floating Shuffle Button - Always visible for demo */}
+      <div className="fixed bottom-24 right-6 z-40">
         <Button
           onClick={handleShuffle}
-          disabled={isShuffling || selectedPlayers.length < 2}
-          className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
+          disabled={isShuffling}
+          className={`w-16 h-16 rounded-full shadow-2xl transition-all ${
+            selectedPlayers.length >= 2 
+              ? 'bg-blue-500 hover:bg-blue-600 scale-110' 
+              : 'bg-gray-400'
+          }`}
         >
           {isShuffling ? (
             <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent" />
           ) : (
-            <Shuffle className="w-6 h-6" />
+            <div className="flex flex-col items-center">
+              <Shuffle className="w-5 h-5 mb-1" />
+              <span className="text-xs">Shuffle</span>
+            </div>
           )}
         </Button>
       </div>
+
+      {/* Selection counter badge */}
+      {selectedPlayers.length > 0 && (
+        <div className="fixed bottom-32 right-2 z-30">
+          <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+            {selectedPlayers.length} selected
+          </div>
+        </div>
+      )}
 
       {/* Selection bar */}
       {selectedPlayers.length > 0 && (
