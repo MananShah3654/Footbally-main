@@ -38,6 +38,9 @@ builder.Services.AddLogging();
 
 var app = builder.Build();
 
+// Configure to run on port 8001
+app.Urls.Add("http://0.0.0.0:8001");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
