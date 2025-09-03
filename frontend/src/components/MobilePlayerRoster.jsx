@@ -138,19 +138,41 @@ const MobilePlayerRoster = ({ onPlayerClick, onEditPlayer, onDeletePlayer }) => 
           </div>
         )}
 
-        {/* Quick stats */}
-        <div className="flex gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-            <span>DEF {positionCounts.DEF}</span>
+        {/* Quick stats and selection controls */}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-emerald-500 rounded"></div>
+              <span>DEF {positionCounts.DEF}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-amber-500 rounded"></div>
+              <span>MID {positionCounts.MID}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-red-500 rounded"></div>
+              <span>ATT {positionCounts.ATT}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-amber-500 rounded"></div>
-            <span>MID {positionCounts.MID}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>ATT {positionCounts.ATT}</span>
+          
+          {/* Selection mode toggle */}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (selectedPlayers.length === 0) {
+                  // Select first 2 players to demonstrate
+                  const firstTwoPlayers = filteredPlayers.slice(0, 2).map(p => p.id);
+                  setSelectedPlayers(firstTwoPlayers);
+                } else {
+                  setSelectedPlayers([]);
+                }
+              }}
+              className="text-xs"
+            >
+              {selectedPlayers.length > 0 ? 'Clear All' : 'Select'}
+            </Button>
           </div>
         </div>
       </div>
