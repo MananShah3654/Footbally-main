@@ -45,6 +45,12 @@ const MobilePlayerRoster = ({ onPlayerClick, onEditPlayer, onDeletePlayer }) => 
     );
   };
 
+  const handlePlayerClick = (player) => {
+    if (selectedPlayers.length === 0) {
+      onPlayerClick?.(player);
+    }
+  };
+
   const handleShuffle = () => {
     if (selectedPlayers.length < 2) {
       alert('Please select at least 2 players to shuffle teams');
