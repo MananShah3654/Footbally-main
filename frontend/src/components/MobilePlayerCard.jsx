@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
-import { CheckCircle, ChevronRight } from 'lucide-react';
+import { CheckCircle, ChevronRight, Check } from 'lucide-react';
 
-const MobilePlayerCard = ({ player, isSelected = false, onClick = null, onLongPress = null }) => {
+const MobilePlayerCard = ({ player, isSelected = false, onClick = null, onLongPress = null, onSelectionToggle = null, selectionMode = false }) => {
   const positionColors = {
     DEF: 'from-emerald-400 to-emerald-500',
     MID: 'from-amber-400 to-amber-500',
@@ -39,6 +39,20 @@ const MobilePlayerCard = ({ player, isSelected = false, onClick = null, onLongPr
     isSubscribed: player.isSubscribed || false
   };
 
+  const handleCardClick = (e) => {
+    e.preventDefault();
+    if (selectionMode) {
+      onSelectionToggle?.(player.id);
+    } else {
+      onClick?.(player);
+    }
+  };
+
+  const handleSelectionClick = (e) => {
+    e.stopPropagation();
+    onSelectionToggle?.(player.id);
+  };
+
   const handleTouchStart = (e) => {
     e.currentTarget.style.transform = 'scale(0.98)';
     e.currentTarget.style.transition = 'transform 0.1s ease';
@@ -51,17 +65,31 @@ const MobilePlayerCard = ({ player, isSelected = false, onClick = null, onLongPr
   return (
     <Card
       className={`relative overflow-hidden transition-all duration-200 cursor-pointer active:scale-98 ${
-        isSelected ? 'ring-2 ring-blue-500 shadow-lg' : 'shadow-md hover:shadow-lg'
+        isSelected ? 'ring-2 ring-blue-500 shadow-lg bg-blue-50' : 'shadow-md hover:shadow-lg'
       } mx-2 mb-4`}
-      onClick={onClick}
+      onClick={handleCardClick}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* Mobile-style header gradient */}
       <div className={`h-2 bg-gradient-to-r ${positionColors[playerData.position]}`} />
       
+      {/* Selection checkbox - always visible for easy access */}
+      <div className="absolute top-4 left-4 z-10">
+        <button
+          onClick={handleSelectionClick}
+          className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+            isSelected 
+              ? 'bg-blue-500 border-blue-500 text-white' 
+              : 'bg-white border-gray-300 hover:border-blue-400'
+          }`}
+        >
+          {isSelected && <Check className="w-4 h-4" />}
+        </button>
+      </div>
+      
       {/* Main content */}
-      <div className="p-4">
+      <div className="p-4 pl-14"> {/* Extra left padding for checkbox */}
         <div className="flex items-center gap-4">
           {/* Player Avatar */}
           <div className="relative flex-shrink-0">
@@ -108,18 +136,9 @@ const MobilePlayerCard = ({ player, isSelected = false, onClick = null, onLongPr
             </div>
           </div>
 
-          {/* Mobile chevron */}
-          <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
+          {/* Mobile chevron - only show when not in selection mode */}
+          {!selectionMode && <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />}
         </div>
-
-        {/* Selection indicator */}
-        {isSelected && (
-          <div className="absolute top-2 left-2">
-            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-4 h-4 text-white" />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Touch feedback overlay */}
