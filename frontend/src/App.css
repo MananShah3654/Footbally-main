@@ -99,3 +99,19 @@
 .ring-offset-background {
   --tw-ring-offset-color: white;
 }
+
+.bg-background {
+  background-color: white;
+}
+
+.bg-popover {
+  background-color: white;
+}
+
+.text-popover-foreground {
+  color: #1f2937;
+}
+
+.bg-muted {
+  background-color: #f1f5f9;
+}
