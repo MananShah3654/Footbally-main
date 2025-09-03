@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
-import PlayerRoster from "./components/PlayerRoster";
+import MobileHeader from "./components/MobileHeader";
+import MobilePlayerRoster from "./components/MobilePlayerRoster";
+import MobilePlayerProfile from "./components/MobilePlayerProfile";
 import PlayerFormModal from "./components/PlayerFormModal";
-import PlayerProfileModal from "./components/PlayerProfileModal";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,6 +46,8 @@ function App() {
   const handleEditPlayer = (player) => {
     setEditingPlayer(player);
     setIsEditModalOpen(true);
+    // Close profile modal if open
+    setIsProfileModalOpen(false);
   };
 
   const handleDeletePlayer = (playerId) => {
@@ -95,62 +98,41 @@ function App() {
           <LoginPage onLogin={handleLogin} />
         ) : (
           <>
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b">
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">⚽</div>
-                    <div>
-                      <h1 className="text-xl font-bold text-gray-900">Footbally</h1>
-                      <p className="text-sm text-gray-600">FIFA-Style Player Cards</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-8 h-8 rounded-full border-2 border-gray-300"
-                    />
-                    <span className="font-medium hidden sm:block">{user.name}</span>
-                    <button
-                      onClick={handleLogout}
-                      className="text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-1 rounded border hover:border-gray-300"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </header>
+            {/* Mobile Header */}
+            <MobileHeader 
+              user={user} 
+              onLogout={handleLogout}
+              title="Squad"
+              showSearch={true}
+            />
 
             <Routes>
               <Route 
                 path="/" 
                 element={
-                  <div className="container mx-auto p-4">
-                    <PlayerRoster 
-                      onPlayerClick={handlePlayerClick}
-                      onEditPlayer={handleEditPlayer}
-                      onDeletePlayer={handleDeletePlayer}
-                    />
-                  </div>
+                  <MobilePlayerRoster 
+                    onPlayerClick={handlePlayerClick}
+                    onEditPlayer={handleEditPlayer}
+                    onDeletePlayer={handleDeletePlayer}
+                  />
                 } 
               />
             </Routes>
             
+            {/* Mobile Player Profile */}
+            <MobilePlayerProfile
+              player={viewingPlayer}
+              isOpen={isProfileModalOpen}
+              onClose={handleCloseProfileModal}
+              onEdit={handleEditPlayer}
+            />
+
+            {/* Edit Modal (desktop style for complex forms) */}
             <PlayerFormModal
               player={editingPlayer}
               isOpen={isEditModalOpen}
               onClose={handleCloseEditModal}
               onSave={handleSavePlayer}
-            />
-
-            <PlayerProfileModal
-              player={viewingPlayer}
-              isOpen={isProfileModalOpen}
-              onClose={handleCloseProfileModal}
             />
           </>
         )}
