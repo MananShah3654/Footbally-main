@@ -70,8 +70,7 @@ const HomePage = ({ user, onLogout, onCustomizePlayer }) => {
   };
 
   const handleCustomizePlayer = (player) => {
-    // TODO: Open customization modal
-    console.log('Customize player:', player);
+    onCustomizePlayer(player);
   };
 
   const handleViewPlayerStats = (player) => {
