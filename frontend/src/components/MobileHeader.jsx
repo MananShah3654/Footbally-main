@@ -1,8 +1,8 @@
 import React from 'react';
-import { Search, Menu, Bell, User } from 'lucide-react';
+import { Search, Menu, Bell, User, Grid, List, Users } from 'lucide-react';
 import { Button } from './ui/button';
 
-const MobileHeader = ({ user, onLogout, title = "Footbally", showSearch = false, onSearchToggle = null }) => {
+const MobileHeader = ({ user, onLogout, title = "Footbally", showSearch = false, onSearchToggle = null, currentView = "mobile", onViewChange = null }) => {
   return (
     <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       {/* Status bar spacer for mobile */}
@@ -54,6 +54,43 @@ const MobileHeader = ({ user, onLogout, title = "Footbally", showSearch = false,
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="flex border-t border-gray-100">
+        <button
+          onClick={() => onViewChange?.('mobile')}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
+            currentView === 'mobile' 
+              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <Grid className="w-4 h-4" />
+          Mobile View
+        </button>
+        <button
+          onClick={() => onViewChange?.('roster')}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
+            currentView === 'roster' 
+              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          Full Roster
+        </button>
+        <button
+          onClick={() => onViewChange?.('list')}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
+            currentView === 'list' 
+              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <List className="w-4 h-4" />
+          List View
+        </button>
       </div>
     </div>
   );
