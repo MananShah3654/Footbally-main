@@ -156,8 +156,9 @@ const MobilePlayerRoster = ({ onPlayerClick, onEditPlayer, onDeletePlayer }) => 
             key={player.id}
             player={player}
             isSelected={selectedPlayers.includes(player.id)}
-            onClick={() => onPlayerClick?.(player)}
-            onLongPress={() => toggleSelectPlayer(player.id)}
+            onClick={handlePlayerClick}
+            onSelectionToggle={toggleSelectPlayer}
+            selectionMode={selectedPlayers.length > 0}
           />
         ))}
       </div>
