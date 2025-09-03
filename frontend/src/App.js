@@ -3,14 +3,16 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
 import PlayerRoster from "./components/PlayerRoster";
-import PlayerCustomizationModal from "./components/PlayerCustomizationModal";
+import PlayerFormModal from "./components/PlayerFormModal";
+import PlayerProfileModal from "./components/PlayerProfileModal";
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [customizingPlayer, setCustomizingPlayer] = useState(null);
-  const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [editingPlayer, setEditingPlayer] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewingPlayer, setViewingPlayer] = useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -36,13 +38,13 @@ function App() {
   };
 
   const handlePlayerClick = (player) => {
-    setSelectedPlayer(player);
-    // Could open profile modal here
+    setViewingPlayer(player);
+    setIsProfileModalOpen(true);
   };
 
   const handleEditPlayer = (player) => {
-    setCustomizingPlayer(player);
-    setIsCustomizationOpen(true);
+    setEditingPlayer(player);
+    setIsEditModalOpen(true);
   };
 
   const handleDeletePlayer = (playerId) => {
@@ -52,15 +54,27 @@ function App() {
     }
   };
 
-  const handleSavePlayer = (updatedPlayer) => {
-    console.log('Player saved:', updatedPlayer);
-    setIsCustomizationOpen(false);
-    setCustomizingPlayer(null);
+  const handleSavePlayer = async (playerData) => {
+    try {
+      // TODO: Call API to save player
+      console.log('Player saved:', playerData);
+      setIsEditModalOpen(false);
+      setEditingPlayer(null);
+      // Refresh the player list
+      window.location.reload();
+    } catch (error) {
+      console.error('Error saving player:', error);
+    }
   };
 
-  const handleCloseCustomization = () => {
-    setIsCustomizationOpen(false);
-    setCustomizingPlayer(null);
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingPlayer(null);
+  };
+
+  const handleCloseProfileModal = () => {
+    setIsProfileModalOpen(false);
+    setViewingPlayer(null);
   };
 
   if (loading) {
@@ -126,11 +140,17 @@ function App() {
               />
             </Routes>
             
-            <PlayerCustomizationModal
-              player={customizingPlayer}
-              isOpen={isCustomizationOpen}
-              onClose={handleCloseCustomization}
+            <PlayerFormModal
+              player={editingPlayer}
+              isOpen={isEditModalOpen}
+              onClose={handleCloseEditModal}
               onSave={handleSavePlayer}
+            />
+
+            <PlayerProfileModal
+              player={viewingPlayer}
+              isOpen={isProfileModalOpen}
+              onClose={handleCloseProfileModal}
             />
           </>
         )}
