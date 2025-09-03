@@ -4,7 +4,7 @@ import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { CheckCircle } from 'lucide-react';
 
-const PlayerCard = ({ player, isSelected = false, onClick = null }) => {
+const PlayerCard = ({ player, isSelected = false, onClick = null, onCustomize }) => {
   const positionColors = {
     DEF: 'from-emerald-500 to-emerald-600',
     MID: 'from-amber-500 to-amber-600', 
@@ -24,6 +24,18 @@ const PlayerCard = ({ player, isSelected = false, onClick = null }) => {
       }`}
       onClick={onClick}
     >
+        {/* Customize Button */}
+        {onCustomize && (
+          <button
+            className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-10 hover:bg-blue-600"
+            onClick={e => {
+              e.stopPropagation();
+              onCustomize(player);
+            }}
+          >
+            Customize
+          </button>
+        )}
       {/* Header with gradient */}
       <div className={`h-3 bg-gradient-to-r ${positionColors[player.position]}`} />
       

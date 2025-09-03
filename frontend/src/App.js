@@ -13,6 +13,7 @@ import { Card } from './components/ui/card';
 import { generateWhatsAppMessage } from './lib/utils';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
+import LoginPage from './components/LoginPage';
 import { 
   Trophy, 
   Users, 
@@ -465,7 +466,14 @@ const Home = () => {
   );
 };
 
+
 function App() {
+  const [user, setUser] = useState(null);
+
+  if (!user) {
+    return <LoginPage onLogin={setUser} />;
+  }
+
   return (
     <div className="App">
       <BrowserRouter basename={process.env.PUBLIC_URL}>
