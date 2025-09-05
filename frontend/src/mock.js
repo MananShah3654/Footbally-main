@@ -1,3 +1,72 @@
+// Helper to get age difference message
+export function getAgeDifferenceMessage(ageDiff, threshold = 5) {
+  let msg = `Age difference: ${ageDiff}`;
+  if (parseFloat(ageDiff) <= threshold) {
+    msg += ' Well Balanced!';
+  }
+  return msg;
+}
+// Team shuffle algorithm with age balancing
+export const shuffleTeamsByAge = (players, teamSize = 8) => {
+  if (players.length % 2 !== 0) {
+    throw new Error("Even number of players required for age-balanced shuffle");
+  }
+  // Sort players by age
+  const sorted = [...players].sort((a, b) => a.age - b.age);
+  const team1 = [];
+  const team2 = [];
+  let left = 0, right = sorted.length - 1;
+  // Distribute by age and points
+  while (team1.length < teamSize && team2.length < teamSize) {
+    // Calculate current averages
+    const avgAge1 = team1.length ? team1.reduce((sum, p) => sum + p.age, 0) / team1.length : 0;
+    const avgAge2 = team2.length ? team2.reduce((sum, p) => sum + p.age, 0) / team2.length : 0;
+    const avgPoints1 = team1.length ? team1.reduce((sum, p) => sum + p.points, 0) / team1.length : 0;
+    const avgPoints2 = team2.length ? team2.reduce((sum, p) => sum + p.points, 0) / team2.length : 0;
+    // Pick next oldest and youngest
+    const oldest = sorted[right];
+    const youngest = sorted[left];
+    // Assign to team with lower average age and points
+    if ((avgAge1 + avgPoints1) <= (avgAge2 + avgPoints2)) {
+      team1.push(oldest);
+      team2.push(youngest);
+    } else {
+      team2.push(oldest);
+      team1.push(youngest);
+    }
+    left++;
+    right--;
+  }
+  // Pick random captain for each team
+  const team1Captain = team1[Math.floor(Math.random() * team1.length)];
+  const team2Captain = team2[Math.floor(Math.random() * team2.length)];
+  const avgAge1 = (team1.reduce((sum, p) => sum + p.age, 0) / team1.length);
+  const avgAge2 = (team2.reduce((sum, p) => sum + p.age, 0) / team2.length);
+  const avgPoints1 = (team1.reduce((sum, p) => sum + p.points, 0) / team1.length);
+  const avgPoints2 = (team2.reduce((sum, p) => sum + p.points, 0) / team2.length);
+  const totalPoints1 = team1.reduce((sum, p) => sum + p.points, 0);
+  const totalPoints2 = team2.reduce((sum, p) => sum + p.points, 0);
+  return {
+    team1: {
+      players: team1,
+      avgAge: avgAge1.toFixed(1),
+      avgPoints: avgPoints1.toFixed(1),
+      totalPoints: totalPoints1,
+      formation: getFormation(team1),
+      captain: team1Captain
+    },
+    team2: {
+      players: team2,
+      avgAge: avgAge2.toFixed(1),
+      avgPoints: avgPoints2.toFixed(1),
+      totalPoints: totalPoints2,
+      formation: getFormation(team2),
+      captain: team2Captain
+    },
+    ageDifference: Math.abs(avgAge1 - avgAge2).toFixed(2),
+    pointsDifference: Math.abs(avgPoints1 - avgPoints2).toFixed(2)
+  };
+};
 // Mock data for football players - FIFA card style
 export const mockPlayers = [
   {
@@ -230,7 +299,7 @@ export const mockPlayers = [
       dribbling: 60,
       physical: 83
     },
-    age: 44,
+    age: 48,
     preferredFoot: "Right",
     nationality: "India"
   },
@@ -248,7 +317,7 @@ export const mockPlayers = [
       dribbling: 91,
       physical: 76
     },
-    age: 23,
+    age: 49,
     preferredFoot: "Left",
     nationality: "India"
   },
@@ -284,7 +353,7 @@ export const mockPlayers = [
       dribbling: 63,
       physical: 84
     },
-    age: 28,
+    age: 52,
     preferredFoot: "Right",
     nationality: "India"
   },
@@ -338,7 +407,7 @@ export const mockPlayers = [
       dribbling: 89,
       physical: 74
     },
-    age: 26,
+    age: 48,
     preferredFoot: "Right",
     nationality: "India"
   },
@@ -356,7 +425,7 @@ export const mockPlayers = [
       dribbling: 89,
       physical: 74
     },
-    age: 26,
+    age: 23,
     preferredFoot: "Right",
     nationality: "India"
   },

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
 // import { playersAPI, shuffleAPI } from './services/api';
-import { mockPlayers, shuffleTeams } from './mock';
+import { mockPlayers, shuffleTeamsByAge } from './mock';
 import PlayerRoster from './components/PlayerRoster';
 import TeamDisplay from './components/TeamDisplay';
 import PlayerProfileModal from './components/PlayerProfileModal';
@@ -78,18 +78,18 @@ const Home = () => {
   */
 
   const handleShuffle = async () => {
-    if (selectedPlayers.length < 16) {
-      toast.error(`Select at least 16 players to shuffle. Currently selected: ${selectedPlayers.length}`);
-      return;
-    }
     setIsShuffling(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // Use only the first 16 for teams, rest as subs
+      // Use selected team size from PlayerRoster
+      const teamSize = Math.floor(selectedPlayers.length / 2);
+      if (teamSize < 1) {
+        toast.error('Select at least 2 players to shuffle.');
+        return;
+      }
       const selected = players.filter(p => selectedPlayers.includes(p.id));
-      const mainPlayers = selected.slice(0, 16);
-      const subs = selected.slice(16);
-      const newTeams = shuffleTeams(mainPlayers);
+      const mainPlayers = selected.slice(0, teamSize * 2);
+      const subs = selected.slice(teamSize * 2);
+      const newTeams = shuffleTeamsByAge(mainPlayers, teamSize);
       newTeams.subs = subs;
       setTeams(newTeams);
       setShuffleHistory(prev => [...prev, { 
@@ -113,7 +113,7 @@ const Home = () => {
     setSelectedPlayers(prev =>
       prev.includes(playerId)
         ? prev.filter(id => id !== playerId)
-        : prev.length < 16 ? [...prev, playerId] : prev // max 16
+      : prev.length < 18 ? [...prev, playerId] : prev // max 18
     );
   };
 
@@ -323,17 +323,19 @@ const Home = () => {
                   </div>
                 </div>
 
-                {/* Point difference indicator */}
-                <div className="flex items-center justify-center gap-2">
-                  <Target className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    Point difference: {Math.abs(teams.team1.totalPoints - teams.team2.totalPoints)}
-                  </span>
-                  {Math.abs(teams.team1.totalPoints - teams.team2.totalPoints) <= 5 && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-700 border-0">
-                      Well Balanced!
-                    </Badge>
-                  )}
+                {/* Point and Age difference indicator */}
+                <div className="flex items-center justify-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      Point difference: {teams.pointsDifference ? Math.round(parseFloat(teams.pointsDifference)) : Math.abs(teams.team1.totalPoints - teams.team2.totalPoints)}
+                    </span>
+                    {(teams.pointsDifference ? Math.round(parseFloat(teams.pointsDifference)) : Math.abs(teams.team1.totalPoints - teams.team2.totalPoints)) <= 5 && (
+                      <Badge variant="secondary" className="bg-green-100 text-green-700 border-0">
+                        Well Balanced!
+                      </Badge>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-center gap-4 pt-4">
@@ -386,34 +388,32 @@ const Home = () => {
                 Match Statistics
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {teams.team1.players.length}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center space-y-2">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {teams.team1.players.length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Players per team
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Players per team
+                  <div className="text-center space-y-2">
+                    <div className="text-2xl font-bold text-green-600">
+                      {Math.abs(teams.team1.totalPoints - teams.team2.totalPoints)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Point difference
+                    </div>
+                  </div>
+                  <div className="text-center space-y-2">
+                    <div className="text-2xl font-bold text-orange-600">
+                      {((parseFloat(teams.team1.avgAge) + parseFloat(teams.team2.avgAge)) / 2).toFixed(2)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Average team age
+                    </div>
                   </div>
                 </div>
-                
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-green-600">
-                    {Math.abs(teams.team1.totalPoints - teams.team2.totalPoints)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Point difference
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-purple-600">
-                    {Math.round((teams.team1.totalPoints + teams.team2.totalPoints) / 2)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Average team rating
-                  </div>
-                </div>
-              </div>
             </Card>
           </div>
         )}

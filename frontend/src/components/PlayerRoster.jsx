@@ -24,6 +24,7 @@ const PlayerRoster = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [positionFilter, setPositionFilter] = useState('ALL');
+  const [teamSize, setTeamSize] = useState(9); // Default 9 vs 9
 
   const filteredPlayers = players.filter(player => {
     const matchesSearch = player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,15 +58,37 @@ const PlayerRoster = ({
             <div className="flex gap-2 mb-1">
               <Button
                 size="sm"
+                variant={teamSize === 6 ? 'default' : 'outline'}
+                onClick={() => setTeamSize(6)}
+              >6 vs 6</Button>
+              <Button
+                size="sm"
+                variant={teamSize === 7 ? 'default' : 'outline'}
+                onClick={() => setTeamSize(7)}
+              >7 vs 7</Button>
+              <Button
+                size="sm"
+                variant={teamSize === 8 ? 'default' : 'outline'}
+                onClick={() => setTeamSize(8)}
+              >8 vs 8</Button>
+              <Button
+                size="sm"
+                variant={teamSize === 9 ? 'default' : 'outline'}
+                onClick={() => setTeamSize(9)}
+              >9 vs 9</Button>
+            </div>
+            <div className="flex gap-2 mb-1">
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => {
-                  // Select all up to 16 players (filtered)
-                  const allIds = filteredPlayers.slice(0, 16).map(p => p.id);
+                  // Select all up to teamSize*2 players (filtered)
+                  const allIds = filteredPlayers.slice(0, teamSize * 2).map(p => p.id);
                   allIds.forEach(id => {
                     if (!selectedPlayers.includes(id)) toggleSelectPlayer(id);
                   });
                 }}
-                disabled={filteredPlayers.length === 0 || selectedPlayers.length === 16}
+                disabled={filteredPlayers.length === 0 || selectedPlayers.length === teamSize * 2}
               >
                 Select All
               </Button>
